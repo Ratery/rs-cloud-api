@@ -36,6 +36,25 @@ services:
     tty: true
     stdin_open: true
 
+  init-db:
+    image: python:3.13-slim
+    container_name: init_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/root
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: fast_api
+      DB_USER: admin
+      DB_PASSWORD: admin
+    working_dir: /root
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             python -m app.init_db"
+
 volumes:
   pgdata:
     driver: local
