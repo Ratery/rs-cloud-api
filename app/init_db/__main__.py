@@ -1,9 +1,6 @@
 import json
 import asyncio
 
-from alembic import command
-from alembic.config import Config
-
 from app.restaurants.dao import RestaurantsDAO
 from app.dishes.dao import DishesDAO
 
@@ -14,7 +11,7 @@ def load_data(file_path):
     return data
 
 
-async def add_data():
+async def main():
     restaurants_data = load_data('app/init_db/restaurants.json')
     await RestaurantsDAO.add_many(restaurants_data)
 
@@ -22,11 +19,5 @@ async def add_data():
     await DishesDAO.add_many(dishes_data)
 
 
-def run_migrations():
-    alembic_config = Config('alembic.ini')
-    command.upgrade(alembic_config, 'head')
-
-
 if __name__ == '__main__':
-    run_migrations()
-    asyncio.run(add_data())
+    asyncio.run(main())
